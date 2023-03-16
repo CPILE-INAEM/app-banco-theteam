@@ -60,3 +60,97 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+
+const createUsernames = () => {
+
+  accounts.forEach((account) => {
+
+    account.username = account.owner
+      .toLowerCase()
+      .split(' ')
+      .map((name) => name[0])
+      .join('')
+
+  })
+
+}
+
+
+createUsernames();
+console.log(accounts);
+
+btnLogin.addEventListener('clisk', (e) => {
+
+  e.preventDefault();
+  const username = inputLoginUsername.ariaValueMax;
+  const pin = number(inputLoginPin);
+
+})
+
+const currentAccount = accounts.find(
+  (account) => account.username === username
+);
+
+
+if (currentAccount?.pin === pin) {
+  console.log('Datos correctos')
+  labelWelcome.textContent = `Bienvenido ${
+    currentAccount.owner.split(' ')[0]
+  }`
+  containerApp.style.opacity = 100
+}
+
+const updateUI = (currentAccount) => {
+  // obtener movimientos
+  
+
+  //mostrar movimientos
+  //displayMovements(currentAccount)
+
+  //mostrar balance
+  calcAndDisplayBalance(currentAccount.movements);
+
+  //mostrar resumen
+  calcAndDisplaySummary(currentAccount);
+
+}
+
+const calcAndDisplayBalance = (movements) => {
+
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+
+    labelBalance.textContent = `${balance.toFixed(2)}€`;
+
+  }
+
+
+const calcAndDisplaySummary  = (currentAccount) =>{
+  const { movements } = currentAccount;
+
+  const incomes = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov)=> acc + mov, 0)
+    labelSumIn.textContent= `${incomes.toFixed(2)}€`;
+
+  const out = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov)=> acc + mov, 0)
+    labelSumOut.textContent= `${Math.abs(out).toFixed(2)}€`;
+
+    //calculo de intereses:
+    //teniendo en cuenta solo ingresos superiores a 100€
+    //y que el in teres es de cada usuario
+    //y que los intereses sean superiores a 2€
+
+    const interest = movements
+    .filter((mov) => mov > 100)
+    .map((mov) => (mov * currentAccount.interestRate) / 100)
+    .filter((int) => int >=2)
+    .reduce((acc, int)=> acc + int, 0);
+
+    labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+    
+    
+
+}
