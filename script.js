@@ -100,19 +100,28 @@ if (currentAccount?.pin === pin) {
   }`
   containerApp.style.opacity = 100
   inputLoginUsername.value = inputLoginPin.value = "";
+<<<<<<< HEAD
     inputLoginPin.blur();
 
     updateUI(currentAccount);
     const { movements } = currentAccount;
+=======
+  updateUI(currentAccount);
+>>>>>>> c8487c8c7b44befb6f323ccf5e125133fb3fa4bd
 }
 
 });
 
 const updateUI = (currentAccount) => {
-  // obtener movimientos
+  const { movements } = currentAccount;
   
+<<<<<<< HEAD
   //const { movements } = currentAccount;
   //mostrar movimientos
+=======
+  //mostrar movimientos
+  displayMovements(currentAccount)
+>>>>>>> c8487c8c7b44befb6f323ccf5e125133fb3fa4bd
 
   displayMovements(currentAccount.movements)
   
@@ -124,6 +133,7 @@ const updateUI = (currentAccount) => {
 
 }
 
+<<<<<<< HEAD
 const displayMovements = (movements) => {
 
   containerMovements.innerHTML = '';
@@ -145,6 +155,26 @@ const displayMovements = (movements) => {
 
   });
 }
+=======
+const displayMovements = (movements, sort = false) => {
+  //limpiar movimientos antiguos
+  document.querySelector(".movements").innerHTML = "";
+
+
+const movs = sort ? [...movements].sort((a, b) => a - b) : movements;
+  movements.forEach((mov, i) => {
+    const typeMov = mov > 0 ? "deposit" : "withdrawal";
+    const movHTML = `<div class="movements__row">
+      <div class="movements__type movements__type--${typeMov}">${
+      i + 1
+    } ${typeMov}</div>
+      <div class="movements__date">3 days ago</div>
+      <div class="movements__value">${mov.toFixed(2)}€</div>
+    </div>`;
+    containerMovements.insertAdjacentHTML("afterbegin", movHTML);
+  });
+};
+
 
 const calcAndDisplayBalance = (movements) => {
 
@@ -173,13 +203,16 @@ const calcAndDisplaySummary  = (currentAccount) =>{
     //y que el in teres es de cada usuario
     //y que los intereses sean superiores a 2€
 
-    const interest = movements
+   const interest = movements
     .filter((mov) => mov > 100)
     .map((mov) => (mov * currentAccount.interestRate) / 100)
-    .filter((int) => int >=2)
-    .reduce((acc, int)=> acc + int, 0);
+    .filter((int) => int >= 2)
+    .map(int) => {
+      console.log(int);
+      return int;
 
     labelSumInterest.textContent = `${interest.toFixed(2)}€`;
     
-}
+    }
+
 
