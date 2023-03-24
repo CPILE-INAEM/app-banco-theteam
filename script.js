@@ -80,13 +80,13 @@ const createUsernames = () => {
 createUsernames();
 console.log(accounts);
 
-btnLogin.addEventListener('clisk', (e) => {
+btnLogin.addEventListener('click', (e) => {
 
   e.preventDefault();
-  const username = inputLoginUsername.ariaValueMax;
-  const pin = number(inputLoginPin);
+  const username = inputLoginUsername.value;
+  const pin = Number(inputLoginPin.value);
 
-})
+
 
 const currentAccount = accounts.find(
   (account) => account.username === username
@@ -99,21 +99,51 @@ if (currentAccount?.pin === pin) {
     currentAccount.owner.split(' ')[0]
   }`
   containerApp.style.opacity = 100
+  inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    updateUI(currentAccount);
+    const { movements } = currentAccount;
 }
+
+});
 
 const updateUI = (currentAccount) => {
   // obtener movimientos
   
-
+  //const { movements } = currentAccount;
   //mostrar movimientos
-  //displayMovements(currentAccount)
 
+  displayMovements(currentAccount.movements)
+  
   //mostrar balance
   calcAndDisplayBalance(currentAccount.movements);
 
   //mostrar resumen
   calcAndDisplaySummary(currentAccount);
 
+}
+
+const displayMovements = (movements) => {
+
+  containerMovements.innerHTML = '';
+
+
+  movements.forEach((mov, i) => {
+
+    const type =mov>0 ? 'deposit' : 'withdrawal'
+
+    const movHTML = `<div class="movements__row">
+                      <div class="movements__type movements__type--${type}">
+                        ${i + 1} ${type}
+                      </div>
+                      <div class="movements__value">${mov.toFixed(2)}€</div>
+                    </div>`;
+
+                    containerMovements.insertAdjacentHTML('afterbegin', html);
+
+
+  });
 }
 
 const calcAndDisplayBalance = (movements) => {
@@ -151,6 +181,5 @@ const calcAndDisplaySummary  = (currentAccount) =>{
 
     labelSumInterest.textContent = `${interest.toFixed(2)}€`;
     
-    
-
 }
+
