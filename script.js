@@ -63,29 +63,23 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 
 const createUsernames = () => {
-
   accounts.forEach((account) => {
-
     account.username = account.owner
       .toLowerCase()
-      .split(' ')
+      .split(" ")
       .map((name) => name[0])
-      .join('')
+      .join("");
+  });
+};
 
-  })
-
-}
-
-
-createUsernames();
 console.log(accounts);
+createUsernames();
 
 btnLogin.addEventListener('click', (e) => {
-
   e.preventDefault();
   const username = inputLoginUsername.value;
   const pin = Number(inputLoginPin.value);
-
+  console.log(`Intento de login con usuario ${username} y el pin ${pin}`);
 
 
 const currentAccount = accounts.find(
@@ -96,34 +90,24 @@ const currentAccount = accounts.find(
 if (currentAccount?.pin === pin) {
   console.log('Datos correctos')
   labelWelcome.textContent = `Bienvenido ${
-    currentAccount.owner.split(' ')[0]
+    currentAccount.owner.split(" ")[0]
   }`
-  containerApp.style.opacity = 100
+  containerApp.style.opacity = 100;
   inputLoginUsername.value = inputLoginPin.value = "";
-<<<<<<< HEAD
+
     inputLoginPin.blur();
 
     updateUI(currentAccount);
     const { movements } = currentAccount;
-=======
-  updateUI(currentAccount);
->>>>>>> c8487c8c7b44befb6f323ccf5e125133fb3fa4bd
-}
+    }
 
 });
 
 const updateUI = (currentAccount) => {
-  const { movements } = currentAccount;
-  
-<<<<<<< HEAD
   //const { movements } = currentAccount;
-  //mostrar movimientos
-=======
-  //mostrar movimientos
-  displayMovements(currentAccount)
->>>>>>> c8487c8c7b44befb6f323ccf5e125133fb3fa4bd
+  
 
-  displayMovements(currentAccount.movements)
+  displayMovements(currentAccount.movements);
   
   //mostrar balance
   calcAndDisplayBalance(currentAccount.movements);
@@ -133,47 +117,27 @@ const updateUI = (currentAccount) => {
 
 }
 
-<<<<<<< HEAD
 const displayMovements = (movements) => {
 
-  containerMovements.innerHTML = '';
+  containerMovements.innerHTML = "";
 
 
   movements.forEach((mov, i) => {
 
-    const type =mov>0 ? 'deposit' : 'withdrawal'
+    const type =mov>0 ? "deposit" : "withdrawal";
 
-    const movHTML = `<div class="movements__row">
+    const html = `<div class="movements__row">
                       <div class="movements__type movements__type--${type}">
                         ${i + 1} ${type}
                       </div>
                       <div class="movements__value">${mov.toFixed(2)}€</div>
                     </div>`;
 
-                    containerMovements.insertAdjacentHTML('afterbegin', html);
+                    containerMovements.insertAdjacentHTML("afterbegin", html);
 
 
   });
 }
-=======
-const displayMovements = (movements, sort = false) => {
-  //limpiar movimientos antiguos
-  document.querySelector(".movements").innerHTML = "";
-
-
-const movs = sort ? [...movements].sort((a, b) => a - b) : movements;
-  movements.forEach((mov, i) => {
-    const typeMov = mov > 0 ? "deposit" : "withdrawal";
-    const movHTML = `<div class="movements__row">
-      <div class="movements__type movements__type--${typeMov}">${
-      i + 1
-    } ${typeMov}</div>
-      <div class="movements__date">3 days ago</div>
-      <div class="movements__value">${mov.toFixed(2)}€</div>
-    </div>`;
-    containerMovements.insertAdjacentHTML("afterbegin", movHTML);
-  });
-};
 
 
 const calcAndDisplayBalance = (movements) => {
@@ -182,7 +146,7 @@ const calcAndDisplayBalance = (movements) => {
 
     labelBalance.textContent = `${balance.toFixed(2)}€`;
 
-  }
+  };
 
 
 const calcAndDisplaySummary  = (currentAccount) =>{
@@ -207,10 +171,7 @@ const calcAndDisplaySummary  = (currentAccount) =>{
     .filter((mov) => mov > 100)
     .map((mov) => (mov * currentAccount.interestRate) / 100)
     .filter((int) => int >= 2)
-    .map(int) => {
-      console.log(int);
-      return int;
-
+    .reduce((acc, interest) => acc + interest, 0);
     labelSumInterest.textContent = `${interest.toFixed(2)}€`;
     
     }
