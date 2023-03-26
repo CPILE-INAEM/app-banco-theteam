@@ -61,7 +61,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+let currentAccount;
 
+//init app
 const createUsernames = () => {
   accounts.forEach((account) => {
     account.username = account.owner
@@ -76,12 +78,14 @@ console.log(accounts);
 createUsernames();
 
 btnLogin.addEventListener('click', (e) => {
+  //prevent form from submitting
   e.preventDefault();
   const username = inputLoginUsername.value;
   const pin = Number(inputLoginPin.value);
   console.log(`Intento de login con usuario ${username} y el pin ${pin}`);
 
-
+//recorre las cuentas (accounts) y busca el que coincida con el username
+// compara el pin, puede ser nulo si user no existe
 const currentAccount = accounts.find(
   (account) => account.username === username
 );
@@ -142,7 +146,7 @@ const displayMovements = (movements) => {
 
 const calcAndDisplayBalance = (movements) => {
 
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  const balance = movements.reduce((acc, mov) => acc + mov.value, 0);
 
     labelBalance.textContent = `${balance.toFixed(2)}€`;
 
@@ -177,3 +181,49 @@ const calcAndDisplaySummary  = (currentAccount) =>{
     }
 
 
+    btnTransfer.addEventListener('click', function (e) {
+      e.preventDefault();
+      const amountTransfer = Number(inputTransferAmount.value);
+      const recieverAcc = accounts.find(
+        acc => acc.username === inputTransferTo.value
+      );
+
+
+      inputTransferAmount.value  = inputTransferTo.value = '';
+      if (
+        amountTransfer > 0 &&
+        recieverAcc &&
+        currentAccount.balance >= amountTransfer &&
+        recieverAcc?.username !== currentAccount.username
+      ) {
+        currentAccount.movements.push(-amount);
+        recieverAcc.movements.push(amount);
+        //Add transfer Date
+        //currentAccount.movementsDates.push(new Date());
+        //recieverAcc.movementsDates.push(new Date());
+        updateUI();
+      }
+
+      inputTransferTo.blur();
+     
+    });
+
+    btnClose.addEventListener('click', function (e) {
+      e.preventDefault();
+    
+      if (
+        inputCloseUsername.value === currentAccount.username &&
+        inputClosePin.value === currentAccount.pin
+      ) {
+        const index = accounts.findIndex(
+          acc => acc.username === currentAccount.username
+        );
+        
+        accounts.splice(index, 1);
+    
+        containerApp.style.opacity = 0;
+      }
+    
+      inputCloseUsername.value = inputClosePin.value = '';
+    });
+    
