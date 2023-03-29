@@ -61,7 +61,8 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-let currentAccount;
+let sorted = false;
+let currentAccount, timer, saldo, inside;
 
 //init app
 const createUsernames = () => {
@@ -74,8 +75,12 @@ const createUsernames = () => {
   });
 };
 
+
+
 console.log(accounts);
 createUsernames();
+
+
 
 btnLogin.addEventListener('click', (e) => {
   //prevent form from submitting
@@ -86,7 +91,7 @@ btnLogin.addEventListener('click', (e) => {
 
 //recorre las cuentas (accounts) y busca el que coincida con el username
 // compara el pin, puede ser nulo si user no existe
-const currentAccount = accounts.find(
+currentAccount = accounts.find(
   (account) => account.username === username
 );
 
@@ -102,16 +107,16 @@ if (currentAccount?.pin === pin) {
     inputLoginPin.blur();
 
     updateUI(currentAccount);
-    const { movements } = currentAccount;
+    
     }
-
+    inside=true;
 });
 
 const updateUI = (currentAccount) => {
-  //const { movements } = currentAccount;
+ // const { movements } = currentAccount;
   
 
-  displayMovements(currentAccount.movements);
+  displayMovements(currentAccount);
   
   //mostrar balance
   calcAndDisplayBalance(currentAccount.movements);
@@ -121,8 +126,8 @@ const updateUI = (currentAccount) => {
 
 }
 
-const displayMovements = (movements) => {
-
+const displayMovements = (currentAccount) => {
+  const { movements } = currentAccount
   containerMovements.innerHTML = "";
 
 
@@ -146,11 +151,13 @@ const displayMovements = (movements) => {
 
 const calcAndDisplayBalance = (movements) => {
 
-  const balance = movements.reduce((acc, mov) => acc + mov.value, 0);
+   const balance = movements.reduce((acc, mov) => acc + mov, 0);
 
     labelBalance.textContent = `${balance.toFixed(2)}€`;
-
+    saldo = balance;
   };
+  
+  console.log(saldo);
 
 
 const calcAndDisplaySummary  = (currentAccount) =>{
@@ -188,42 +195,55 @@ const calcAndDisplaySummary  = (currentAccount) =>{
         acc => acc.username === inputTransferTo.value
       );
 
-
-      inputTransferAmount.value  = inputTransferTo.value = '';
+      
       if (
         amountTransfer > 0 &&
         recieverAcc &&
-        currentAccount.balance >= amountTransfer &&
+        saldo >= amountTransfer &&
         recieverAcc?.username !== currentAccount.username
       ) {
-        currentAccount.movements.push(-amount);
-        recieverAcc.movements.push(amount);
+
+
+        currentAccount.movements.push(-amountTransfer);
+        recieverAcc.movements.push(amountTransfer);
         //Add transfer Date
         //currentAccount.movementsDates.push(new Date());
         //recieverAcc.movementsDates.push(new Date());
-        updateUI();
+        updateUI(currentAccount);
       }
-
+      inputTransferAmount.value  = inputTransferTo.value = '';
       inputTransferTo.blur();
      
     });
 
+    btnLoan.addEventListener('click', function (e) {
+      e.preventDefault();
+      const request = Number(inputLoanAmount.value);
+      if ( request > 0)
+        
+          currentAccount.movements.push(request);
+          saldo +=request;
+          updateUI(currentAccount);
+      
+      inputLoanAmount.value = '';
+      inputLoanAmount.blur();
+    });
+
     btnClose.addEventListener('click', function (e) {
       e.preventDefault();
-    
+      const accUserName = inputCloseUsername.value;
+      const accPin = Number(inputClosePin.value);
       if (
-        inputCloseUsername.value === currentAccount.username &&
-        inputClosePin.value === currentAccount.pin
+        accUserName === currentAccount.username &&
+        accPin === currentAccount.pin
       ) {
-        const index = accounts.findIndex(
-          acc => acc.username === currentAccount.username
+        accounts.splice(
+          accounts.findIndex(acc => acc === currentAccount),
+          1
         );
-        
-        accounts.splice(index, 1);
-    
+        currentAccount = '';
         containerApp.style.opacity = 0;
+        labelWelcome.textContent = 'Inicia Sesion';
       }
-    
       inputCloseUsername.value = inputClosePin.value = '';
     });
-    
