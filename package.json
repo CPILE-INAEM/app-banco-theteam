@@ -1,0 +1,16 @@
+{
+    "name": "app banco",
+    "version": "1.0.0",
+    "description": "nuevo proyecto",
+    "main": "index.html",
+    "scripts": {
+      "deploy": "scp -P 22123 -r * efrain@efrain.certweb.infenlaces.com:/home/efrain/efraphp/sitiophp/pig-game"
+    },
+    "author": "efrain mendoza",
+    "license": "ISC",
+    "devDependencies": {
+      "eslint": "^8.35.0",
+      "eslint-config-prettier": "^8.6.0",
+      "prettier": "^2.8.4"
+    }
+}
